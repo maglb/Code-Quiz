@@ -6,20 +6,18 @@ border: 1px solid black;
 
 body {
     height: 100vh;
-}
-
-header {
-    height: 10%;
     display: flex;
-    justify-content: space-between;
-    padding: 2%;
+    justify-content: center;
 }
-
 
 main {
-    height: 50%;
-    width: 50%;
+    flex: 3 0;
     margin: auto;
+}
+
+aside {
+    flex: 1 0;
+    padding-top: 2%;
 }
 
 h2 {
@@ -29,10 +27,20 @@ h2 {
     padding-bottom: 2%;
 }
 
+ol {
+    padding-top: 1%;
+    padding-bottom: 1%;
+}
+
 button {
     background-color: darkblue;
     color: white;
     padding: 1%;
     font-size: 24px;
     border-radius: 8px;
+}
+
+button:hover{
+    cursor: pointer;
+    background-color: blue;
 }
