@@ -2,12 +2,14 @@
 margin: 0;
 padding: 0;
 border: 1px solid black;
+box-sizing: border-box;
 }
 
 body {
     height: 100vh;
     display: flex;
     justify-content: center;
+    box-sizing: border-box;
 }
 
 main {
@@ -43,4 +45,16 @@ button {
 button:hover{
     cursor: pointer;
     background-color: blue;
+}
+
+/* .selected{
+    background-color:white;
+    color: darkblue;
+    border: solid 2px darkblue;
+} */
+
+button:focus {
+    background-color:white;
+    color: darkblue;
+    border: solid 2px darkblue;
 }
