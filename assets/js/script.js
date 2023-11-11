@@ -2,13 +2,13 @@ var questionEl = document.getElementById("question");
 
 var firstQ = {
     prompt: "Inside the HTML document, where do you place your JavaScript code?",
-    options: ["Inside the <script> element", "Inside the <link> element", "In the <footer> element", "Inside the <head> element"],
+    options: ["Inside the <link> element", "In the <footer> element", "Inside the <script> element", "Inside the <head> element"],
     answer: "Inside the <script> element"
 };
 
 var secondQ = {
     prompt: "What operator is used to assign a value to a declared variable?",
-    options: ["Equal sign (=)", "Colon (:)", "Double-equal (==)", "Question mark (?)"],
+    options: ["Colon (:)", "Double-equal (==)", "Equal sign (=)", "Question mark (?)"],
     answer: "Equal sign (=)"
 };
 
@@ -20,19 +20,11 @@ var question03 = {
 
 var question04 = {
     prompt: "How do we declare a conditional statement in JavaScript?",
-    options: ["if...else", "for loop", "while loop", "difference...between"],
+    options: ["for loop", "while loop", "difference...between", "if...else"],
     answer: "if...else"
 };
 
-var optionOne = document.getElementById("option1");
-var optionTwo = document.getElementById("option2");
-var optionThree = document.getElementById("option3");
-var optionFour = document.getElementById("option4");
-
-// var firstQuiz = questionEl.textContent(firstQ.prompt);
-// console.log(firstQ.prompt);
-
-// var questionItem = firstQ.prompt;
+var answerEl = document.getElementById('answer');
 
 // Add text to the H2 (#question )element 
 questionEl.textContent = firstQ.prompt;
@@ -43,24 +35,59 @@ questionEl.textContent = firstQ.prompt;
 var options = document.getElementsByClassName("options")
 
 // For each ol element, add a button element
+
 for (var i = 0; i < options.length; i++) {
     var button = document.createElement("button");
-    options[i].appendChild(button);
+    var optionsBtn = options[i].appendChild(button);
+    optionsBtn.className = 'optionBtn';
     console.log[i];
-   }
-
-// optionOne.children[0].textContent = firstQ.options[0];
-// var newOptions = document.querySelectorAll(".options");
-
+}
 
 var newQuestion = firstQ;
 
 // For each button inside of the ol element, add the corresponding answer option for the question
 
-for (var i = 0; i < options.length; i++) {
 var newOptions = document.getElementsByClassName("options");
-var newQuestion = firstQ;
-console.log(newQuestion);
+for (var i = 0; i < options.length; i++) {
+    var newQuestion = firstQ;
+    console.log(newQuestion);
 
-newOptions[i].children[0].textContent = newQuestion.options[i];
-   }
+    newOptions[i].children[0].textContent = newQuestion.options[i];
+}
+
+// Add EventListener to the button options and display either the selected option is right or not
+
+for (var i = 0; i < options.length; i++) {
+    newOptions[i].addEventListener('click', function (event) {
+        if (event.target.innerText == newQuestion.answer) {
+            answerEl.textContent = "Correct!"
+
+            // Disable all the button until the next question is uploaded
+
+            options.children[0].disabled = true;
+            console.log(ptions.children[0]);
+
+        } else {
+            answerEl.textContent = "Wrong!"
+            // Disable all the button until the next question is uploaded
+            options.disabled = true;
+        }
+
+    });
+}
+
+
+
+
+
+
+
+// // Add EventListener to the button "Next" to upload the next question
+
+// var nextBtn = document.getElementById("nextBtn");
+
+// nextBtn.addEventListener('click', function(event)){
+
+// }
+
+
