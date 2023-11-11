@@ -24,12 +24,43 @@ var question04 = {
     answer: "if...else"
 };
 
+var optionOne = document.getElementById("option1");
+var optionTwo = document.getElementById("option2");
+var optionThree = document.getElementById("option3");
+var optionFour = document.getElementById("option4");
 
 // var firstQuiz = questionEl.textContent(firstQ.prompt);
 // console.log(firstQ.prompt);
 
 // var questionItem = firstQ.prompt;
 
-// Add text to the H2 (#questyion )element 
+// Add text to the H2 (#question )element 
 questionEl.textContent = firstQ.prompt;
-console.log(firstQ.prompt);
+
+// Create button inside of each ol element
+
+
+var options = document.getElementsByClassName("options")
+
+// For each ol element, add a button element
+for (var i = 0; i < options.length; i++) {
+    var button = document.createElement("button");
+    options[i].appendChild(button);
+    console.log[i];
+   }
+
+// optionOne.children[0].textContent = firstQ.options[0];
+// var newOptions = document.querySelectorAll(".options");
+
+
+var newQuestion = firstQ;
+
+// For each button inside of the ol element, add the corresponding answer option for the question
+
+for (var i = 0; i < options.length; i++) {
+var newOptions = document.getElementsByClassName("options");
+var newQuestion = firstQ;
+console.log(newQuestion);
+
+newOptions[i].children[0].textContent = newQuestion.options[i];
+   }

@@ -24,9 +24,9 @@
     font-family: inherit;
   }
   
-  ol, ul {
+  /* ol, ul {
     list-style: none;
-  }
+  } */
 
   button {
       background-color: transparent;
