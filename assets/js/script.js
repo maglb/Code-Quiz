@@ -1,4 +1,7 @@
 var questionEl = document.getElementById("question");
+var answerEl = document.getElementById('answer');
+var optionsEl = document.getElementsByClassName("options");
+var timerEl = document.getElementById("timer");
 
 var firstQ = {
     prompt: "Inside the HTML document, where do you place your JavaScript code?",
@@ -12,82 +15,143 @@ var secondQ = {
     answer: "Equal sign (=)"
 };
 
-var question03 = {
+var thirdQ = {
     prompt: "What are the six primitive data types in JavaScript?",
     options: ["string, number, boolean, bigInt, symbol, undefined", "sentence, int, truthy, bigInt, symbol, undefined", "sentence, float, data, bigInt, symbol, undefined", "string, num, falsy, bigInt, symbol, undefined"],
     answer: "string, number, boolean, bigInt, symbol, undefined"
 };
 
-var question04 = {
+var FourthQ = {
     prompt: "How do we declare a conditional statement in JavaScript?",
     options: ["for loop", "while loop", "difference...between", "if...else"],
     answer: "if...else"
 };
 
-var answerEl = document.getElementById('answer');
+// Add all the objects questions in one variable
+var allQuestions = [firstQ, secondQ, thirdQ, FourthQ];
 
-// Add text to the H2 (#question )element 
-questionEl.textContent = firstQ.prompt;
+console.log(questionEl);
+console.log(answerEl);
+console.log(optionsEl);
+console.log(typeof optionsEl);
+console.log(allQuestions);
+console.log(typeof allQuestions);
+console.log(timerEl);
+console.log(typeof timerEl);
 
-// Create button inside of each ol element
+var questionArea = document.getElementById("questionArea");
+
+// // Display headline and intro 
+// var introEl = document.createElement("p");
+// var intro = questionArea.appendChild(introEl);
+
+// intro.textContent = "This is a timed quiz. Once you press start you will have 60 seconds to complete the quiz";
 
 
-var options = document.getElementsByClassName("options")
+// // Create a start button
+// var startEl = document.createElement("button");
+// var startBtn = questionArea.appendChild(startEl);
+// startBtn.innerText = "Start";
+
+// // Add an eventListener to the start button to start the quiz and timer.
+
+// startBtn.addEventListener('click', timer);
+
+// // IT IS WORKING Timer that counts down from 60
+//     function timer() {
+//         var timeLeft = 60;
+
+//         var timeInterval = setInterval(function () {
+//             if (timeLeft > 0) {
+//                 timerEl.textContent = timeLeft;
+//                 timeLeft--;
+//             } else {
+//                 timerEl.textContent = "0";
+//                 // Use `clearInterval()` to stop the timer
+//                 clearInterval(timeInterval);
+//                 // Once `timeLeft` gets to 0, display "Game Over"
+//                 questionEl.textContent = 'Game Over';
+//             }
+//         }, 1000);
+
+//         startBtn.remove();
+//         intro.remove();
+
+//         // call function to display the quiz
+
+//     };
+
+
+// Function to display the quiz
 
 // For each ol element, add a button element
 
-for (var i = 0; i < options.length; i++) {
+for (var i = 0; i < optionsEl.length; i++) {
     var button = document.createElement("button");
-    var optionsBtn = options[i].appendChild(button);
+    var optionsBtn = optionsEl[i].appendChild(button);
     optionsBtn.className = 'optionBtn';
-    console.log[i];
 }
 
-var newQuestion = firstQ;
+// Timer that counts down from 2 and then upload the next question
+function nextQuestion() {
+    var time = 2;
+  
+    // Use the `setInterval()` method to call a function to be executed every 1000 milliseconds
+    var countdown = setInterval(function () {
+      // As long as the `timeLeft` is greater than 1
+      if (time > 1) {
+        time--;
+      } else {
+        clearInterval(countdown);
+        // Call the `displayMessage()` function
+        displayQ();
+      }
+    }, 1000);
+  };
 
-// For each button inside of the ol element, add the corresponding answer option for the question
+var index = 0;
+var questionItem = allQuestions[index];
 
-var newOptions = document.getElementsByClassName("options");
-for (var i = 0; i < options.length; i++) {
-    var newQuestion = firstQ;
-    console.log(newQuestion);
+// Function to upload question and options on the page
 
-    newOptions[i].children[0].textContent = newQuestion.options[i];
-}
+function displayQ() {
+    // Add text to the H2 (#question) element 
+    questionItem = allQuestions[index];
 
-// Add EventListener to the button options and display either the selected option is right or not
+    if (index < allQuestions.length) {
+        questionEl.textContent = questionItem.prompt;
 
-for (var i = 0; i < options.length; i++) {
-    newOptions[i].addEventListener('click', function (event) {
-        if (event.target.innerText == newQuestion.answer) {
-            answerEl.textContent = "Correct!"
+           // For each button inside of the ol element, add the corresponding answer option for the current question
+    for (var i = 0; i < optionsEl.length; i++) {
+        optionsEl[i].children[0].textContent = questionItem.options[i];
+    }
 
-            // Disable all the button until the next question is uploaded
+    // Add EventListener to the button options and display either the selected option is right or not
 
-            options.children[0].disabled = true;
-            console.log(ptions.children[0]);
+    for (var i = 0; i < optionsEl.length; i++) {
+        optionsEl[i].addEventListener('click', function (event) {
+            if (event.target.innerText == questionItem.answer) {
+                answerEl.textContent = "Correct!"
+    
+            } else {
+                answerEl.textContent = "Wrong!"
+            }
 
-        } else {
-            answerEl.textContent = "Wrong!"
-            // Disable all the button until the next question is uploaded
-            options.disabled = true;
-        }
+            // Once the answer is selected, upload the next question
+            index++;
+            nextQuestion(); 
+        });
+    }
 
-    });
-}
+        // Show score
+    } else {
+        questionEl.textContent = "You score is " + timeleft;
+        for (var i = 0; i < optionsEl.length; i++) {
+            optionsEl[i].remove();
+          }
+    }
+};
 
-
-
-
-
-
-
-// // Add EventListener to the button "Next" to upload the next question
-
-// var nextBtn = document.getElementById("nextBtn");
-
-// nextBtn.addEventListener('click', function(event)){
-
-// }
+displayQ();
 
 
