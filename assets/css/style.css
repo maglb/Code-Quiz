@@ -22,11 +22,26 @@ aside {
     padding-top: 2%;
 }
 
+
+h1 {
+    font-size: 70px;
+    text-align: center;
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
 h2 {
     font-size: 50px;
     text-align: center;
     padding-top: 2%;
     padding-bottom: 2%;
+}
+
+p {
+    font-size: 20px;
+    text-align: center;
+    padding-top: 2%;
+    padding-bottom: 2%; 
 }
 
 ol {
@@ -57,4 +72,22 @@ button:focus {
     background-color:white;
     color: darkblue;
     border: solid 2px darkblue;
+}
+
+.hidden{
+    display:none; 
+}
+
+.shown{
+    display:inline; 
+}
+
+#score-input {
+    display: flex;
+    column-gap: 5px;
+}
+
+#submit {
+    display: flex;
+    column-gap: 5px;
 }
