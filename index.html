@@ -11,14 +11,20 @@
 </head>
 
 <body>
-    <aside id="viewScore"><a>View Score</a></aside>
+    <aside id="viewScore"><button>View high score<button></aside>
     <main>
-        <h1></h1>
-        <section id="game">
+
+        <section id="homepage" class="shown">
+        <h1>Coding Quiz</h1>
+        <p>This is a timed quiz. Once you press start you will have 60 seconds to complete the quiz</p>
+        <button id="start">Start the game</button>
+        </section>
+
+        <section id="game" class="hidden">
             <div id="questionArea">
-                
-                <h2 id='question'>Coding Quiz</h2>
-            
+
+                <h2 id='question'></h2>
+
             </div>
 
             <ul id="btn-container">
@@ -28,12 +34,35 @@
                 <ol class="options"> </ol>
             </ul>
 
+            <div id="score-container" class="hidden">
+                <form id="score-input">
+                    <label for="initials">Enter initials:</label><br>
+                    <input type="text" id="initials" name="initials"><br>
+                </form>
+                <button id="submit">Submit</button>
+            </div>
+
+            <h3 id="answer"></h3>
+
         </section>
 
-        <h3 id="answer"></h3>
+        <section id="high-score" class="hidden">
+
+            <h2 id='question'>High Score</h2>
+
+            <ul id="score-container">
+            </ul>
+            <div id="score-btn-container ">
+                <button id="go-back">Go Back</button>
+                <button id="clear">Clear high score</button>
+            </div>
+
+        </section>
     </main>
 
-    <aside><p id='timer'>Timer</p></aside>
+    <aside>
+        <p id='timer'>Timer</p>
+    </aside>
 
     <script src="./assets/js/script.js"></script>
 </body>

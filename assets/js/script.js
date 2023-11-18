@@ -4,11 +4,21 @@ var optionsEl = document.getElementsByClassName("options");
 var timerEl = document.getElementById("timer");
 var questionArea = document.getElementById("questionArea");
 var btnContainer = document.getElementById("btn-container");
+var submitEl = document.getElementById("submit");
+var initialsInput = document.getElementById("initials");
+var viewScore = document.getElementById("viewScore");
+var gameEl = document.getElementById("game");
+var highScoreEl = document.getElementById("high-score");
+var backBtn = document.getElementById("go-back");
+var clearBtn = document.getElementById("clear");
+var homepageEl = document.getElementById("homepage");
+var startBtn = document.getElementById("start");
 var timeInterval;
 var timeLeft;
 var index = 0;
 var questionItem;
-var nextQ;
+var score;
+var userScore;
 
 var firstQ = {
     prompt: "Inside the HTML document, where do you place your JavaScript code?",
@@ -34,27 +44,21 @@ var FourthQ = {
     answer: "if...else"
 };
 
+// Create input element for the user to save his score
+var scoreEl = document.getElementById("score-container");
+scoreEl.setAttribute("class", "hidden");
+
 // Add all the objects questions in one variable
 var allQuestions = [firstQ, secondQ, thirdQ, FourthQ];
 
-// Display headline and intro 
-var introEl = document.createElement("p");
-var intro = questionArea.appendChild(introEl);
-
-intro.textContent = "This is a timed quiz. Once you press start you will have 60 seconds to complete the quiz";
-
-// Create a start button
-var startEl = document.createElement("button");
-var startBtn = questionArea.appendChild(startEl);
-startBtn.innerText = "Start";
-
-// Add an eventListener to the start button to start the quiz and timer.
-
+// Add event listener to the start button
 startBtn.addEventListener('click', timer);
 
 // Timer that counts down from 60
 function timer() {
-
+    homepageEl.setAttribute("class", "hidden");
+    highScoreEl.setAttribute("class", "hidden");
+    gameEl.setAttribute("class", "shown");
     timeLeft = 60;
 
     timeInterval = setInterval(function () {
@@ -66,13 +70,10 @@ function timer() {
             // Use `clearInterval()` to stop the timer
             clearInterval(timeInterval);
             // Once `timeLeft` gets to 0, display "Game Over"
-            questionEl.textContent = 'Game Over';
+            questionEl.textContent = "Game Over\nYour Score is 0";
             btnContainer.remove();
         }
     }, 1000);
-
-    startBtn.remove();
-    intro.remove();
     createBtnOptions();
     displayQ();
 };
@@ -126,9 +127,11 @@ function displayQ() {
                     if (timeLeft < 0) {
                         questionEl.textContent = "Game Over\nYour Score is 0";
                         clearInterval(timeInterval);
+                        btnContainer.remove();
+                        scoreEl.setAttribute("class", "shown");
                     }
                 }
- // Once the answer is selected, upload the next question after a second past and disable the buttons so the answer can't be changed.
+                // Once the answer is selected, upload the next question after a second past and disable the buttons so the answer can't be changed.
                 event.target.onclick = setTimeout(displayQ, 1000);
                 disableButtons();
             });
@@ -143,6 +146,7 @@ function displayQ() {
         // Use `clearInterval()` to stop the timer
         clearInterval(timeInterval);
         btnContainer.remove();
+        scoreEl.setAttribute("class", "shown");
     }
 
     else {
@@ -152,8 +156,129 @@ function displayQ() {
         // Stop the timer
         clearInterval(timeInterval);
         btnContainer.remove();
+        scoreEl.setAttribute("class", "shown");
 
     }
 };
 
-// Store scores
+submitEl.addEventListener('click', function (event){
+
+event.preventDefault();
+
+storeScore();
+
+// If todos were retrieved from localStorage, update the todos array to it
+    if (storedScore !== null) {
+      todos = storedTodos;
+    }
+    var storedScore = [];
+  
+});
+
+
+function storeScore(){
+// create user object from submission
+userScore = initialsInput.value.trim() + " – " + timeLeft;
+    // set new submission to local storage 
+  localStorage.setItem("UserScore", userScore);
+}
+
+
+// // This function is being called below and will run when the page loads.
+// function init() {
+//     // Get stored todos from localStorage
+//     var storedTodos = JSON.parse(localStorage.getItem("todos"));
+  
+//     // If todos were retrieved from localStorage, update the todos array to it
+//     if (storedTodos !== null) {
+//       todos = storedTodos;
+//     }
+  
+//     // This is a helper function that will render todos to the DOM
+//     renderTodos();
+//   }
+  
+//   function storeTodos() {
+//     // Stringify and set key in localStorage to todos array
+//     localStorage.setItem("todos", JSON.stringify(todos));
+//   }
+  
+//   // Add submit event to form
+//   todoForm.addEventListener("submit", function(event) {
+//     event.preventDefault();
+  
+//     var todoText = todoInput.value.trim();
+  
+//     // Return from function early if submitted todoText is blank
+//     if (todoText === "") {
+//       return;
+//     }
+  
+//     // Add new todoText to todos array, clear the input
+//     todos.push(todoText);
+//     todoInput.value = "";
+  
+//     // Store updated todos in localStorage, re-render the list
+//     storeTodos();
+//     renderTodos();
+//   });
+  
+
+
+viewScore.addEventListener('click', showScore);
+
+
+
+function renderLastGrade() {
+
+    gameEl.setAttribute("class", "hidden");
+    homepageEl.setAttribute("class", "hidden");
+    highScoreEl.setAttribute("class", "shown");
+
+    // Use JSON.parse() to convert text to JavaScript object
+    var highScore = JSON.parse(localStorage.getItem("UserScore"));
+
+    // Check if data is returned, if not exit out of the function
+    if (lastGrade !== null) {
+      document.getElementById('saved-name').innerHTML = lastGrade.student;
+      document.getElementById('saved-grade').innerHTML = lastGrade.grade;
+      document.getElementById('saved-comment').innerHTML = lastGrade.comment;
+    }
+  }
+
+// Store scores - ITS WORKING
+function registerScore() {
+    clearInterval(timeInterval);
+    score = timeLeft;
+    var userName = initialsInput.value;
+    console.log(userName);
+    console.log(score);
+    localStorage.setItem('Score', score);
+    localStorage.setItem('User Name', userName);
+    showScore();
+};
+
+// Store scores - ITS WORKING
+function showScore() {
+    clearInterval(timeInterval);
+
+     // Use JSON.parse() to convert text to JavaScript object
+     var lastGrade = JSON.parse(localStorage.getItem('studentGrade'));
+
+    gameEl.setAttribute("class", "hidden");
+    homepageEl.setAttribute("class", "hidden");
+    highScoreEl.setAttribute("class", "shown");
+    score = localStorage.getItem("Score");
+    var name = localStorage.getItem("User Name");
+    var scoreIt = document.createElement("ol");
+    var scoreEl = document.getElementById("score-container");
+    scoreEl.appendChild(scoreIt);
+    scoreEl.textContent = name + "–" + score;
+};
+
+backBtn.addEventListener('click', homePage);
+
+function homePage() {
+    homepageEl.setAttribute("class", "shown");
+    highScoreEl.setAttribute("class", "hidden");
+}
