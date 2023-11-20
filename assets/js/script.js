@@ -13,6 +13,8 @@ var backBtn = document.getElementById("go-back");
 var clearBtn = document.getElementById("clear");
 var homepageEl = document.getElementById("homepage");
 var startBtn = document.getElementById("start");
+var scoreContainer = document.getElementById("score-container");
+var listContainer = document.getElementById("score-list-container");
 var timeInterval;
 var timeLeft;
 var index = 0;
@@ -161,124 +163,75 @@ function displayQ() {
     }
 };
 
-submitEl.addEventListener('click', function (event){
+var userScore = [];
 
-event.preventDefault();
-
-storeScore();
-
-// If todos were retrieved from localStorage, update the todos array to it
-    if (storedScore !== null) {
-      todos = storedTodos;
-    }
-    var storedScore = [];
-  
-});
-
-
-function storeScore(){
-// create user object from submission
-userScore = initialsInput.value.trim() + " – " + timeLeft;
-    // set new submission to local storage 
-  localStorage.setItem("UserScore", userScore);
+// Function to store score into the local storage
+function storeScore() {
+    // Stringify and set key in localStorage to todos array
+    localStorage.setItem("userScore", JSON.stringify(userScore));
 }
 
+// Add submit event to form
+submitEl.addEventListener("click", function (event) {
+    event.preventDefault();
+    userScore = JSON.parse(localStorage.getItem("userScore"));
+    var initials = initialsInput.value.trim()
+    console.log(initials.toUpperCase());
+    var newScore = initials.toUpperCase() + ": " + timeLeft;
 
-// // This function is being called below and will run when the page loads.
-// function init() {
-//     // Get stored todos from localStorage
-//     var storedTodos = JSON.parse(localStorage.getItem("todos"));
-  
-//     // If todos were retrieved from localStorage, update the todos array to it
-//     if (storedTodos !== null) {
-//       todos = storedTodos;
-//     }
-  
-//     // This is a helper function that will render todos to the DOM
-//     renderTodos();
-//   }
-  
-//   function storeTodos() {
-//     // Stringify and set key in localStorage to todos array
-//     localStorage.setItem("todos", JSON.stringify(todos));
-//   }
-  
-//   // Add submit event to form
-//   todoForm.addEventListener("submit", function(event) {
-//     event.preventDefault();
-  
-//     var todoText = todoInput.value.trim();
-  
-//     // Return from function early if submitted todoText is blank
-//     if (todoText === "") {
-//       return;
-//     }
-  
-//     // Add new todoText to todos array, clear the input
-//     todos.push(todoText);
-//     todoInput.value = "";
-  
-//     // Store updated todos in localStorage, re-render the list
-//     storeTodos();
-//     renderTodos();
-//   });
-  
-
-
-viewScore.addEventListener('click', showScore);
-
-
-
-function renderLastGrade() {
-
-    gameEl.setAttribute("class", "hidden");
-    homepageEl.setAttribute("class", "hidden");
-    highScoreEl.setAttribute("class", "shown");
-
-    // Use JSON.parse() to convert text to JavaScript object
-    var highScore = JSON.parse(localStorage.getItem("UserScore"));
-
-    // Check if data is returned, if not exit out of the function
-    if (lastGrade !== null) {
-      document.getElementById('saved-name').innerHTML = lastGrade.student;
-      document.getElementById('saved-grade').innerHTML = lastGrade.grade;
-      document.getElementById('saved-comment').innerHTML = lastGrade.comment;
+    // Return from function early if submitted todoText is blank
+    if (newScore === "") {
+        return;
     }
-  }
 
-// Store scores - ITS WORKING
-function registerScore() {
+    else {
+        // Add new todoText to todos array, clear the input
+        userScore.push(newScore);
+        initialsInput.value = "";
+        console.log(userScore);
+    }
+
+    // Store updated todos in localStorage, re-render the list
+    storeScore();
+    displayScore();
+});
+console.log(scoreContainer);
+
+// The following function renders items in a todo list as <li> elements
+function displayScore() {
+
     clearInterval(timeInterval);
-    score = timeLeft;
-    var userName = initialsInput.value;
-    console.log(userName);
-    console.log(score);
-    localStorage.setItem('Score', score);
-    localStorage.setItem('User Name', userName);
-    showScore();
-};
-
-// Store scores - ITS WORKING
-function showScore() {
-    clearInterval(timeInterval);
-
-     // Use JSON.parse() to convert text to JavaScript object
-     var lastGrade = JSON.parse(localStorage.getItem('studentGrade'));
 
     gameEl.setAttribute("class", "hidden");
     homepageEl.setAttribute("class", "hidden");
     highScoreEl.setAttribute("class", "shown");
-    score = localStorage.getItem("Score");
-    var name = localStorage.getItem("User Name");
-    var scoreIt = document.createElement("ol");
-    var scoreEl = document.getElementById("score-container");
-    scoreEl.appendChild(scoreIt);
-    scoreEl.textContent = name + "–" + score;
+
+    userScore = JSON.parse(localStorage.getItem("userScore"));
+    console.log(userScore);
+
+    // Render a new li for each todo
+    for (var i = 0; i < userScore.length; i++) {
+        var highScore = userScore[i];
+
+        var li = document.createElement("li");
+        li.textContent = highScore;
+        console.log(li);
+        listContainer.appendChild(li);
+        console.log(listContainer);
+    }
 };
+
+viewScore.addEventListener('click', function (event) {
+    highScoreEl.setAttribute("class", "shown");
+    homepageEl.setAttribute("class", "hidden");
+    gameEl.setAttribute("class", "hidden");
+});
 
 backBtn.addEventListener('click', homePage);
 
 function homePage() {
+    location.reload();
     homepageEl.setAttribute("class", "shown");
     highScoreEl.setAttribute("class", "hidden");
+    
 }
