@@ -1,3 +1,4 @@
+// VARIABLES
 var questionEl = document.getElementById("question");
 var answerEl = document.getElementById('answer');
 var optionsEl = document.getElementsByClassName("options");
@@ -13,15 +14,14 @@ var backBtn = document.getElementById("go-back");
 var clearBtn = document.getElementById("clear");
 var homepageEl = document.getElementById("homepage");
 var startBtn = document.getElementById("start");
-var scoreContainer = document.getElementById("score-container");
 var listContainer = document.getElementById("score-list-container");
 var timeInterval;
 var timeLeft;
 var index = 0;
 var questionItem;
-var score;
-var userScore;
+var userScore = [];
 
+// Object containing the question, the correpongin options and answer
 var firstQ = {
     prompt: "Inside the HTML document, where do you place your JavaScript code?",
     options: ["Inside the <link> element", "In the <footer> element", "Inside the <script> element", "Inside the <head> element"],
@@ -46,17 +46,57 @@ var FourthQ = {
     answer: "if...else"
 };
 
-// Create input element for the user to save his score
-var scoreEl = document.getElementById("score-container");
-scoreEl.setAttribute("class", "hidden");
-
 // Add all the objects questions in one variable
 var allQuestions = [firstQ, secondQ, thirdQ, FourthQ];
 
-// Add event listener to the start button
+// Create input element for the user to save his score and hide the element
+var scoreEl = document.getElementById("score-container");
+scoreEl.setAttribute("class", "hidden");
+
+// EVENTLISTENER
+
+// Start Button
 startBtn.addEventListener('click', timer);
 
-// Timer that counts down from 60
+// Back Button
+backBtn.addEventListener('click', homePage);
+
+// View High Score Button
+viewScore.addEventListener('click', function (event) {
+    highScoreEl.setAttribute("class", "shown");
+    homepageEl.setAttribute("class", "hidden");
+    gameEl.setAttribute("class", "hidden");
+    displayScore();
+});
+
+// Submit Buton: store score in the local storage on click
+submitEl.addEventListener("click", function (event) {
+    event.preventDefault();
+    userScore = JSON.parse(localStorage.getItem("userScore"));
+    var initials = initialsInput.value.trim()
+    console.log(initials.toUpperCase());
+    var newScore = initials.toUpperCase() + ": " + timeLeft;
+
+    // Stop the function if no initials is entered
+    if (newScore === "") {
+        return;
+    }
+
+    else {
+        // Add the new score to the userScore array, clear the input
+        userScore.push(newScore);
+        initialsInput.value = "";
+        console.log(userScore);
+    }
+
+    // Store updated user score in localStorage, display the saved scores
+    storeScore();
+    displayScore();
+});
+
+// FUNCTIONS
+
+// Timer function that counts down from 60 every second
 function timer() {
     homepageEl.setAttribute("class", "hidden");
     highScoreEl.setAttribute("class", "hidden");
@@ -64,48 +104,28 @@ function timer() {
     timeLeft = 60;
 
     timeInterval = setInterval(function () {
+        timeLeft--;
+
         if (timeLeft > 0) {
             timerEl.textContent = "Timer: " + timeLeft + "s";
-            timeLeft--;
+
+            // If the time left in the timer equals 0
         } else {
             timerEl.textContent = "Timer: " + timeLeft + "s";
-            // Use `clearInterval()` to stop the timer
+            // Stop the timer
             clearInterval(timeInterval);
-            // Once `timeLeft` gets to 0, display "Game Over"
+            // And display "Game Over"
             questionEl.textContent = "Game Over\nYour Score is 0";
             btnContainer.remove();
+            scoreEl.setAttribute("class", "shown");
         }
     }, 1000);
+    // If the time left in the timer equals 0
     createBtnOptions();
     displayQ();
 };
 
-// For each ol element, add a button element
-function createBtnOptions() {
-    for (var i = 0; i < optionsEl.length; i++) {
-        var button = document.createElement("button");
-        var optionsBtn = optionsEl[i].appendChild(button);
-        optionsBtn.className = 'optionBtn';
-    }
-};
-
-var buttonEl = document.getElementsByTagName("button");
-console.log(buttonEl);
-
-// Function to enable the options buttons
-function enableButtons() {
-    for (var i = 0; i < optionsEl.length; i++) {
-        optionsEl[i].children[0].disabled = false;
-    }
-};
-
-// Function to disable the options buttons
-function disableButtons() {
-    for (var i = 0; i < optionsEl.length; i++) {
-        optionsEl[i].children[0].disabled = true;
-    }
-};
-
+// Display each question from the object allQuestion
 function displayQ() {
 
     answerEl.textContent = "";
@@ -123,10 +143,13 @@ function displayQ() {
                 if (event.target.innerText == questionItem.answer) {
                     answerEl.textContent = "Correct!"
 
+                    // If the answer is incorrect, remove 10s fromt the timer
                 } else {
                     answerEl.textContent = "Wrong!"
-                    timeLeft = timeLeft - 10;
-                    if (timeLeft < 0) {
+                    timeLeft = Math.max(timeLeft - 10, 0);
+
+                    timerEl.textContent = "Timer: " + timeLeft + "s";
+                    if (timeLeft <= 0) {
                         questionEl.textContent = "Game Over\nYour Score is 0";
                         clearInterval(timeInterval);
                         btnContainer.remove();
@@ -145,7 +168,7 @@ function displayQ() {
 
         // Once `timeLeft` gets to 0, display "Game Over" and the final score.
         questionEl.textContent = "Game Over\nYour Score is " + timeLeft;
-        // Use `clearInterval()` to stop the timer
+        // Stop the timer
         clearInterval(timeInterval);
         btnContainer.remove();
         scoreEl.setAttribute("class", "shown");
@@ -163,44 +186,11 @@ function displayQ() {
     }
 };
 
-var userScore = [];
-
-// Function to store score into the local storage
-function storeScore() {
-    // Stringify and set key in localStorage to todos array
-    localStorage.setItem("userScore", JSON.stringify(userScore));
-}
-
-// Add submit event to form
-submitEl.addEventListener("click", function (event) {
-    event.preventDefault();
-    userScore = JSON.parse(localStorage.getItem("userScore"));
-    var initials = initialsInput.value.trim()
-    console.log(initials.toUpperCase());
-    var newScore = initials.toUpperCase() + ": " + timeLeft;
-
-    // Return from function early if submitted todoText is blank
-    if (newScore === "") {
-        return;
-    }
-
-    else {
-        // Add new todoText to todos array, clear the input
-        userScore.push(newScore);
-        initialsInput.value = "";
-        console.log(userScore);
-    }
-
-    // Store updated todos in localStorage, re-render the list
-    storeScore();
-    displayScore();
-});
-console.log(scoreContainer);
-
-// The following function renders items in a todo list as <li> elements
+// Function that displays each score into a list
 function displayScore() {
 
     clearInterval(timeInterval);
+    listContainer.textContent = "";
 
     gameEl.setAttribute("class", "hidden");
     homepageEl.setAttribute("class", "hidden");
@@ -209,7 +199,7 @@ function displayScore() {
     userScore = JSON.parse(localStorage.getItem("userScore"));
     console.log(userScore);
 
-    // Render a new li for each todo
+    // Display a new li for each user score
     for (var i = 0; i < userScore.length; i++) {
         var highScore = userScore[i];
 
@@ -217,21 +207,43 @@ function displayScore() {
         li.textContent = highScore;
         console.log(li);
         listContainer.appendChild(li);
-        console.log(listContainer);
+        // console.log(listContainer);
     }
 };
 
-viewScore.addEventListener('click', function (event) {
-    highScoreEl.setAttribute("class", "shown");
-    homepageEl.setAttribute("class", "hidden");
-    gameEl.setAttribute("class", "hidden");
-});
+// Function to store score into the local storage
 
-backBtn.addEventListener('click', homePage);
+function storeScore() {
+    // Stringify and set key in localStorage to userScore array
+    localStorage.setItem("userScore", JSON.stringify(userScore));
+}
 
+// Display Homepage
 function homePage() {
     location.reload();
     homepageEl.setAttribute("class", "shown");
     highScoreEl.setAttribute("class", "hidden");
-    
-}
+};
+
+// For each ol element, add a button element
+function createBtnOptions() {
+    for (var i = 0; i < optionsEl.length; i++) {
+        var button = document.createElement("button");
+        var optionsBtn = optionsEl[i].appendChild(button);
+        optionsBtn.className = 'optionBtn';
+    }
+};
+
+// Function to enable the options buttons
+function enableButtons() {
+    for (var i = 0; i < optionsEl.length; i++) {
+        optionsEl[i].children[0].disabled = false;
+    }
+};
+
+// Function to disable the options buttons
+function disableButtons() {
+    for (var i = 0; i < optionsEl.length; i++) {
+        optionsEl[i].children[0].disabled = true;
+    }
+};

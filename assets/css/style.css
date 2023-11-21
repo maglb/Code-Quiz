@@ -1,7 +1,7 @@
 * {
 margin: 0;
 padding: 0;
-border: 1px solid black;
+/* border: 1px solid black; */
 box-sizing: border-box;
 }
 
@@ -55,12 +55,21 @@ button {
     padding: 1%;
     font-size: 24px;
     border-radius: 8px;
+    cursor: pointer;
 }
 
 button:hover{
-    cursor: pointer;
     background-color: blue;
 }
+
+/* button:disabled:hover {
+cursor: wait;
+} */
+
+button:disabled {
+    color: lightblue;
+    cursor: wait;
+    }
 
 /* .selected{
     background-color:white;
