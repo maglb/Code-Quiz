@@ -10,7 +10,7 @@ var initialsInput = document.getElementById("initials");
 var viewScore = document.getElementById("viewScore");
 var gameEl = document.getElementById("game");
 var highScoreEl = document.getElementById("high-score");
-var backBtn = document.getElementById("go-back");
+var backBtn = document.getElementsByClassName("go-back");
 var clearBtn = document.getElementById("clear");
 var homepageEl = document.getElementById("homepage");
 var startBtn = document.getElementById("start");
@@ -40,14 +40,30 @@ var thirdQ = {
     answer: "string, number, boolean, bigInt, symbol, undefined"
 };
 
-var FourthQ = {
+var fourthQ = {
     prompt: "How do we declare a conditional statement in JavaScript?",
     options: ["for loop", "while loop", "difference...between", "if...else"],
     answer: "if...else"
 };
 
+var fifthQ = {
+    prompt: "From the given array which index is the letter 'b' on? ['a', 'b', 'c', 'd']",
+    options: ["0", "3", "1", "2"],
+    answer: "1"
+};
+
+var sixQ = {
+    prompt: "How do we stop a loop from from repeating indefinitely?",
+    options: ["	We have to explicitly end the loop with the break keyword.", "When we have iterated through half of the condition.", "A loop will stop executing when the condition is true.", "A loop will stop executing when the condition is false."],
+    answer: "A loop will stop executing when the condition is false."
+};
+
 // Add all the objects questions in one variable
-var allQuestions = [firstQ, secondQ, thirdQ, FourthQ];
+var allQuestions = [firstQ, secondQ, thirdQ, fourthQ, fifthQ, sixQ];
+
+console.log(allQuestions);
+console.log(typeof allQuestions);
+console.log(allQuestions.length);
 
 // Create input element for the user to save his score and hide the element
 var scoreEl = document.getElementById("score-container");
@@ -59,14 +75,27 @@ scoreEl.setAttribute("class", "hidden");
 startBtn.addEventListener('click', timer);
 
 // Back Button
-backBtn.addEventListener('click', homePage);
+for (var i = 0; i < backBtn.length; i++) {
+    backBtn[i].addEventListener('click', function (event) {
+        event.stopPropagation();
+    homePage();
+    })
+};
 
 // View High Score Button
 viewScore.addEventListener('click', function (event) {
+    event.stopPropagation();
     highScoreEl.setAttribute("class", "shown");
     homepageEl.setAttribute("class", "hidden");
     gameEl.setAttribute("class", "hidden");
     displayScore();
+});
+
+// Clear High Score Button
+clearBtn.addEventListener('click', function (event) {
+    event.stopPropagation();
+    localStorage.removeItem("userScore");
+    listContainer.textContent = "";
 });
 
 // Submit Buton: store score in the local storage on click
@@ -74,19 +103,24 @@ submitEl.addEventListener("click", function (event) {
     event.preventDefault();
     userScore = JSON.parse(localStorage.getItem("userScore"));
     var initials = initialsInput.value.trim()
-    console.log(initials.toUpperCase());
+    console.log(userScore);
+
     var newScore = initials.toUpperCase() + ": " + timeLeft;
+    console.log(newScore);
 
     // Stop the function if no initials is entered
-    if (newScore === "") {
+    if (initials === "") {
         return;
+    }
+
+    else if (userScore == null) {
+        userScore = [newScore];
     }
 
     else {
         // Add the new score to the userScore array, clear the input
         userScore.push(newScore);
         initialsInput.value = "";
-        console.log(userScore);
     }
 
     // Store updated user score in localStorage, display the saved scores
@@ -98,6 +132,7 @@ submitEl.addEventListener("click", function (event) {
 
 // Timer function that counts down from 60 every second
 function timer() {
+    event.stopPropagation();
     homepageEl.setAttribute("class", "hidden");
     highScoreEl.setAttribute("class", "hidden");
     gameEl.setAttribute("class", "shown");
@@ -110,7 +145,7 @@ function timer() {
             timerEl.textContent = "Timer: " + timeLeft + "s";
 
             // If the time left in the timer equals 0
-        } else {
+        } else if (timeLeft <= 0) {
             timerEl.textContent = "Timer: " + timeLeft + "s";
             // Stop the timer
             clearInterval(timeInterval);
@@ -120,24 +155,24 @@ function timer() {
             scoreEl.setAttribute("class", "shown");
         }
     }, 1000);
-    // If the time left in the timer equals 0
     createBtnOptions();
     displayQ();
 };
 
-// Display each question from the object allQuestion
+// Display each question from the object allQuestions
 function displayQ() {
-
-    answerEl.textContent = "";
-    questionItem = allQuestions[index];
-    enableButtons();
-
-    // Add text to the H2 (#question) element 
     if (index < allQuestions.length) {
+        answerEl.textContent = "";
+        questionItem = allQuestions[index];
+        enableButtons();
+
+        // Add text to the H2 (#question) element 
+
+        console.log(index);
         questionEl.textContent = questionItem.prompt;
 
         // For each button inside of the ol element, add the corresponding answer option for the current question
-        for (let i = 0; i < optionsEl.length; i++) {
+        for (var i = 0; i < optionsEl.length; i++) {
             optionsEl[i].children[0].textContent = questionItem.options[i];
             optionsEl[i].addEventListener('click', function (event) {
                 if (event.target.innerText == questionItem.answer) {
@@ -157,13 +192,13 @@ function displayQ() {
                     }
                 }
                 // Once the answer is selected, upload the next question after a second past and disable the buttons so the answer can't be changed.
+                // index++;
                 event.target.onclick = setTimeout(displayQ, 1000);
                 disableButtons();
             });
         }
         index++;
     }
-
     else if (timeLeft === 0) {
 
         // Once `timeLeft` gets to 0, display "Game Over" and the final score.
@@ -182,7 +217,6 @@ function displayQ() {
         clearInterval(timeInterval);
         btnContainer.remove();
         scoreEl.setAttribute("class", "shown");
-
     }
 };
 
@@ -197,17 +231,20 @@ function displayScore() {
     highScoreEl.setAttribute("class", "shown");
 
     userScore = JSON.parse(localStorage.getItem("userScore"));
-    console.log(userScore);
-
+    if (userScore == null) {
+        return;
+    }
     // Display a new li for each user score
-    for (var i = 0; i < userScore.length; i++) {
-        var highScore = userScore[i];
+    else {
+        for (var i = 0; i < userScore.length; i++) {
+            var highScore = userScore[i];
 
-        var li = document.createElement("li");
-        li.textContent = highScore;
-        console.log(li);
-        listContainer.appendChild(li);
-        // console.log(listContainer);
+            var li = document.createElement("li");
+            li.textContent = highScore;
+            console.log(li);
+            listContainer.appendChild(li);
+            // console.log(listContainer);
+        }
     }
 };
 
@@ -220,9 +257,11 @@ function storeScore() {
 
 // Display Homepage
 function homePage() {
+    console.log("hello")
     location.reload();
-    homepageEl.setAttribute("class", "shown");
     highScoreEl.setAttribute("class", "hidden");
+    gameEl.setAttribute("class", "hidden");
+    homepageEl.setAttribute("class", "shown");
 };
 
 // For each ol element, add a button element
