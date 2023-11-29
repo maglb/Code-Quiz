@@ -53,7 +53,7 @@ var fifthQ = {
 };
 
 var sixQ = {
-    prompt: "How do we stop a loop from from repeating indefinitely?",
+    prompt: "How do we stop a loop from repeating indefinitely?",
     options: ["	We have to explicitly end the loop with the break keyword.", "When we have iterated through half of the condition.", "A loop will stop executing when the condition is true.", "A loop will stop executing when the condition is false."],
     answer: "A loop will stop executing when the condition is false."
 };
@@ -61,9 +61,9 @@ var sixQ = {
 // Add all the objects questions in one variable
 var allQuestions = [firstQ, secondQ, thirdQ, fourthQ, fifthQ, sixQ];
 
-console.log(allQuestions);
-console.log(typeof allQuestions);
-console.log(allQuestions.length);
+// console.log(allQuestions);
+// console.log(typeof allQuestions);
+// console.log(allQuestions.length);
 
 // Create input element for the user to save his score and hide the element
 var scoreEl = document.getElementById("score-container");
@@ -78,7 +78,7 @@ startBtn.addEventListener('click', timer);
 for (var i = 0; i < backBtn.length; i++) {
     backBtn[i].addEventListener('click', function (event) {
         event.stopPropagation();
-    homePage();
+        homePage();
     })
 };
 
@@ -161,44 +161,24 @@ function timer() {
 
 // Display each question from the object allQuestions
 function displayQ() {
+    console.log(index);
     if (index < allQuestions.length) {
         answerEl.textContent = "";
         questionItem = allQuestions[index];
         enableButtons();
 
         // Add text to the H2 (#question) element 
-
-        console.log(index);
         questionEl.textContent = questionItem.prompt;
 
         // For each button inside of the ol element, add the corresponding answer option for the current question
         for (var i = 0; i < optionsEl.length; i++) {
+            // console.log(optionsEl.length);
             optionsEl[i].children[0].textContent = questionItem.options[i];
-            optionsEl[i].addEventListener('click', function (event) {
-                if (event.target.innerText == questionItem.answer) {
-                    answerEl.textContent = "Correct!"
+            // console.log(optionsEl[i]);
 
-                    // If the answer is incorrect, remove 10s fromt the timer
-                } else {
-                    answerEl.textContent = "Wrong!"
-                    timeLeft = Math.max(timeLeft - 10, 0);
-
-                    timerEl.textContent = "Timer: " + timeLeft + "s";
-                    if (timeLeft <= 0) {
-                        questionEl.textContent = "Game Over\nYour Score is 0";
-                        clearInterval(timeInterval);
-                        btnContainer.remove();
-                        scoreEl.setAttribute("class", "shown");
-                    }
-                }
-                // Once the answer is selected, upload the next question after a second past and disable the buttons so the answer can't be changed.
-                // index++;
-                event.target.onclick = setTimeout(displayQ, 1000);
-                disableButtons();
-            });
         }
-        index++;
     }
+
     else if (timeLeft === 0) {
 
         // Once `timeLeft` gets to 0, display "Game Over" and the final score.
@@ -219,6 +199,7 @@ function displayQ() {
         scoreEl.setAttribute("class", "shown");
     }
 };
+
 
 // Function that displays each score into a list
 function displayScore() {
@@ -270,6 +251,30 @@ function createBtnOptions() {
         var button = document.createElement("button");
         var optionsBtn = optionsEl[i].appendChild(button);
         optionsBtn.className = 'optionBtn';
+        optionsEl[i].addEventListener('click', function (event) {
+            if (event.target.innerText == questionItem.answer) {
+                answerEl.textContent = "Correct!"
+
+                // If the answer is incorrect, remove 10s fromt the timer
+            } else {
+                answerEl.textContent = "Wrong!"
+                timeLeft = Math.max(timeLeft - 10, 0);
+
+                timerEl.textContent = "Timer: " + timeLeft + "s";
+                if (timeLeft <= 0) {
+                    questionEl.textContent = "Game Over\nYour Score is 0";
+                    clearInterval(timeInterval);
+                    btnContainer.remove();
+                    scoreEl.setAttribute("class", "shown");
+                }
+            }
+
+            index++;
+            // Once the answer is selected, upload the next question after a second past and disable the buttons so the answer can't be changed.
+            setTimeout(displayQ, 1000);
+            disableButtons();
+
+        });
     }
 };
 
